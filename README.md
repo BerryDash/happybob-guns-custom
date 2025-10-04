@@ -1,4 +1,4 @@
-# Berry Dash Lite
+# Berry Dash with Guns
 
-A smaller version of the game without servers, encryption, version checker and more.
+We gave the bird a gun.
 
