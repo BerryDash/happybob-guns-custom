@@ -521,7 +521,6 @@ public class GamePlayer : MonoBehaviour
                             totalRandomBerries++;
                             System.Action[] funcs = {
                                 () => DoNormalBerry(randomBerry),
-                                () => DoSlowBerry(randomBerry),
                                 () => DoUltraBerry(randomBerry),
                                 () => DoSpeedyBerry(randomBerry),
                                 () => DoAntiBerry(randomBerry)
