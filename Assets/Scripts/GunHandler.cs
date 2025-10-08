@@ -51,7 +51,7 @@ public class GunHandler : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, 0f, clamped);
 
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame || Keyboard.current.rightShiftKey.wasPressedThisFrame)
+        if (Keyboard.current.leftShiftKey.wasPressedThisFrame || Keyboard.current.rightShiftKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
         {
             Vector3 offset = new(0.6932073f, 0.352302f, 0f);
             if (flipped) offset.x = -offset.x;
