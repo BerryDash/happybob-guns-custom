@@ -43,6 +43,7 @@ public class GamePlayer : MonoBehaviour
     public Button jumpButton;
     public Button rightButton;
     public Button leftButton;
+    public Button shootButton;
 
     void Start()
     {
@@ -62,6 +63,8 @@ public class GamePlayer : MonoBehaviour
         screenWidth = Camera.main.orthographicSize * 2f * Camera.main.aspect;
         if (Application.isMobilePlatform) mobileButtons.SetActive(true);
         UpdateStats(0, 1);
+
+        if (Application.isMobilePlatform) shootButton.onClick.AddListener(() => GunHandler.Instance.ShootGun());
     }
 
     void MoveBird()

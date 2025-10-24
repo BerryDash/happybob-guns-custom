@@ -1,21 +1,51 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class GunHandler : MonoBehaviour
 {
+    public static GunHandler Instance;
     public SpriteRenderer bulletTemplate;
     private bool hasAutoRotated = false;
+    private bool tracking = true;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Update()
     {
         if (GamePlayer.instance.pausePanel.activeSelf) return;
 
-        Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(
-            new Vector3(mouseScreenPos.x, mouseScreenPos.y, -Camera.main.transform.position.z)
+        Vector2 inputPos = Vector2.zero;
+        bool pressedNow = false;
+        bool isMobile = Touchscreen.current != null;
+
+        if (isMobile)
+        {
+            var touch = Touchscreen.current.primaryTouch;
+            bool touchingUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.touchId.ReadValue());
+            if (touch.press.wasPressedThisFrame && !touchingUI) tracking = true;
+            if (touch.press.wasReleasedThisFrame) tracking = false;
+            if (tracking && !touchingUI) inputPos = touch.position.ReadValue();
+        }
+        else
+        {
+            inputPos = Mouse.current.position.ReadValue();
+            pressedNow = Mouse.current.leftButton.wasPressedThisFrame
+                || Keyboard.current.leftShiftKey.wasPressedThisFrame
+                || Keyboard.current.rightShiftKey.wasPressedThisFrame
+                || Keyboard.current.fKey.wasPressedThisFrame;
+        }
+
+        if (!tracking) return;
+
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(
+            new Vector3(inputPos.x, inputPos.y, -Camera.main.transform.position.z)
         );
 
-        Vector2 direction = mouseWorldPos - transform.position;
+        Vector2 direction = worldPos - transform.position;
         bool flipped = transform.parent.localScale.x > 0f;
 
         if (flipped)
@@ -34,7 +64,7 @@ public class GunHandler : MonoBehaviour
             if (!hasAutoRotated)
             {
                 hasAutoRotated = true;
-                Vector3 scale = transform.parent.localScale;
+                var scale = transform.parent.localScale;
                 scale.x *= -1;
                 transform.parent.localScale = scale;
                 flipped = !flipped;
@@ -51,19 +81,22 @@ public class GunHandler : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, 0f, clamped);
 
-        if (Keyboard.current.leftShiftKey.wasPressedThisFrame || Keyboard.current.rightShiftKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            Vector3 offset = new(0.6932073f, 0.352302f, 0f);
-            if (flipped) offset.x = -offset.x;
-            Vector3 spawnPos = transform.position + transform.rotation * offset;
-            var bullet = Instantiate(bulletTemplate, spawnPos, Quaternion.identity);
-            bullet.transform.rotation = Quaternion.Euler(0f, 0f, transform.rotation.eulerAngles.z + (flipped ? 0 : 180f));
-            bullet.gameObject.name = "Bullet";
-            bullet.gameObject.SetActive(true);
+        if (pressedNow) ShootGun();
+    }
 
-            float angleRad = bullet.transform.eulerAngles.z * Mathf.Deg2Rad;
-            Vector2 dir = new(-Mathf.Cos(angleRad), -Mathf.Sin(angleRad));
-            bullet.GetComponent<Rigidbody2D>().linearVelocity = dir * 10f;
-        }
+    internal void ShootGun()
+    {
+        bool flipped = transform.parent.localScale.x > 0f;
+        Vector3 offset = new(0.6932073f, 0.352302f, 0f);
+        if (flipped) offset.x = -offset.x;
+        Vector3 spawnPos = transform.position + transform.rotation * offset;
+        var bullet = Instantiate(bulletTemplate, spawnPos, Quaternion.identity);
+        bullet.transform.rotation = Quaternion.Euler(0f, 0f, transform.rotation.eulerAngles.z + (flipped ? 0 : 180f));
+        bullet.gameObject.name = "Bullet";
+        bullet.gameObject.SetActive(true);
+
+        float angleRad = bullet.transform.eulerAngles.z * Mathf.Deg2Rad;
+        Vector2 dir = new(-Mathf.Cos(angleRad), -Mathf.Sin(angleRad));
+        bullet.GetComponent<Rigidbody2D>().linearVelocity = dir * 10f;
     }
 }
