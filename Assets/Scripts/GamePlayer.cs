@@ -27,13 +27,16 @@ public class GamePlayer : MonoBehaviour
     private float antiLeft;
     private float screenWidth;
     internal bool isGrounded;
+    internal bool isGrounded2;
     public TMP_Text scoreText;
     public TMP_Text highScoreText;
     public TMP_Text boostText;
     public GameObject bird;
+    public GameObject bird2;
     public GameObject pausePanel;
     public GameObject statsPanel;
     public Rigidbody2D rb;
+    public Rigidbody2D rb2;
     public AudioSource backgroundMusic;
     public GameObject berryParent;
 
@@ -73,7 +76,10 @@ public class GamePlayer : MonoBehaviour
         float baseSpeed = 0.18f * (screenWidth / 20.19257f);
         bool doMoveRight = false;
         bool doMoveLeft = false;
+        bool doMoveRight2 = false;
+        bool doMoveLeft2 = false;
         bool doJump = false;
+        bool doJump2 = false;
         bool doRestart = false;
         bool doBack = false;
         float movespeed = baseSpeed;
@@ -91,17 +97,29 @@ public class GamePlayer : MonoBehaviour
         bool controllerJump = Gamepad.current != null && (Gamepad.current.leftStick.up.isPressed || Gamepad.current.leftStick.down.isPressed || Gamepad.current.dpad.up.isPressed || Gamepad.current.dpad.down.isPressed || Gamepad.current.rightStick.up.isPressed || Gamepad.current.rightStick.down.isPressed);
         if (!Application.isMobilePlatform)
         {
-            if (controllerLeft || Keyboard.current.leftArrowKey.isPressed || Keyboard.current.aKey.isPressed || Keyboard.current.jKey.isPressed)
+            if (controllerLeft || Keyboard.current.aKey.isPressed)
             {
                 doMoveLeft = true;
             }
-            if (controllerRight || Keyboard.current.rightArrowKey.isPressed || Keyboard.current.dKey.isPressed || Keyboard.current.lKey.isPressed)
+            if (controllerRight || Keyboard.current.dKey.isPressed)
             {
                 doMoveRight = true;
             }
-            if (controllerJump || Keyboard.current.spaceKey.isPressed || Keyboard.current.upArrowKey.isPressed || Keyboard.current.wKey.isPressed || Keyboard.current.downArrowKey.isPressed || Keyboard.current.sKey.isPressed || Keyboard.current.kKey.isPressed || Keyboard.current.iKey.isPressed || (Gamepad.current != null && Gamepad.current.buttonSouth.isPressed))
+            if (Keyboard.current.leftArrowKey.isPressed)
+            {
+                doMoveLeft2 = true;
+            }
+            if (Keyboard.current.rightArrowKey.isPressed)
+            {
+                doMoveRight2 = true;
+            }
+            if (Keyboard.current.wKey.isPressed)
             {
                 doJump = true;
+            }
+            if (Keyboard.current.upArrowKey.isPressed)
+            {
+                doJump2 = true;
             }
             if (Keyboard.current.rKey.isPressed)
             {
@@ -133,6 +151,16 @@ public class GamePlayer : MonoBehaviour
             bird.transform.position += new UnityEngine.Vector3(movespeed, 0f, 0f);
             ClampPosition(bird);
         }
+        if (doMoveLeft2 && !doMoveRight2)
+        {
+            bird2.transform.position += new UnityEngine.Vector3(-movespeed, 0f, 0f);
+            ClampPosition(bird2);
+        }
+        if (doMoveRight2 && !doMoveLeft2)
+        {
+            bird2.transform.position += new UnityEngine.Vector3(movespeed, 0f, 0f);
+            ClampPosition(bird2);
+        }
         if (doJump && isGrounded)
         {
             AudioSource.PlayClipAtPoint(Resources.Load<AudioClip>("Sounds/Jump"), Camera.main.transform.position, 0.75f * BazookaManager.Instance.GetSettingSFXVolume());
@@ -147,6 +175,22 @@ public class GamePlayer : MonoBehaviour
             else
             {
                 rb.linearVelocity = UnityEngine.Vector2.up * 9f;
+            }
+        }
+        if (doJump2 && isGrounded2)
+        {
+            AudioSource.PlayClipAtPoint(Resources.Load<AudioClip>("Sounds/Jump"), Camera.main.transform.position, 0.75f * BazookaManager.Instance.GetSettingSFXVolume());
+            if (boostLeft > 0f || speedyLeft > 0f)
+            {
+                rb2.linearVelocity = UnityEngine.Vector2.up * 12f;
+            }
+            else if (slownessLeft > 0f)
+            {
+                rb2.linearVelocity = UnityEngine.Vector2.up * 6f;
+            }
+            else
+            {
+                rb2.linearVelocity = UnityEngine.Vector2.up * 9f;
             }
         }
         if (doBack)
@@ -304,6 +348,7 @@ public class GamePlayer : MonoBehaviour
         {
             screenWidth = Camera.main.orthographicSize * 2f * Camera.main.aspect;
             ClampPosition(bird);
+            ClampPosition(bird2);
             GameObject[] allberries = GameObject.FindGameObjectsWithTag("NormalBerry")
                 .Concat(GameObject.FindGameObjectsWithTag("PoisonBerry"))
                 .Concat(GameObject.FindGameObjectsWithTag("SlowBerry"))
@@ -598,8 +643,11 @@ public class GamePlayer : MonoBehaviour
     void Respawn()
     {
         bird.transform.position = new UnityEngine.Vector3(0f, -4.3f, 0f);
+        bird2.transform.position = new UnityEngine.Vector3(0f, -4.3f, 0f);
         rb.gravityScale = 0f;
         rb.linearVelocity = UnityEngine.Vector2.zero;
+        rb2.gravityScale = 0f;
+        rb2.linearVelocity = UnityEngine.Vector2.zero;
         score = 0;
         boostLeft = 0f;
         slownessLeft = 0f;
@@ -658,6 +706,14 @@ public class GamePlayer : MonoBehaviour
         {
             bird.transform.position = new UnityEngine.Vector2(bird.transform.position.x, -4.1359f);
             rb.linearVelocity = new UnityEngine.Vector2(rb.linearVelocity.x, 0f);
+        }
+        isGrounded2 = bird2.transform.position.y <= -4.1299996f;
+        rb2.gravityScale = isGrounded2 ? 0f : 1.5f;
+
+        if (bird2.transform.position.y < -4.1359f)
+        {
+            bird2.transform.position = new UnityEngine.Vector2(bird2.transform.position.x, -4.1359f);
+            rb2.linearVelocity = new UnityEngine.Vector2(rb2.linearVelocity.x, 0f);
         }
         if (Application.isMobilePlatform) jumpButton.transform.GetChild(0).GetComponent<TMP_Text>().color = isGrounded ? Color.white : Color.red;
     }
