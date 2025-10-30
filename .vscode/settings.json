@@ -66,7 +66,7 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "BerryDashGuns.slnx",
+    "dotnet.defaultSolution": "happybob-guns-custom.slnx",
     "editor.formatOnSave": true,
     "dotnet.formatting.organizeImportsOnFormat": true,
     "csharp.format.enable": true
