@@ -381,7 +381,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(normalBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, normalBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, normalBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, normalBerry.transform.position) < 1.5f)
                 {
                     totalNormalBerries++;
                     DoNormalBerry(normalBerry);
@@ -414,7 +414,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(poisonBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, poisonBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, poisonBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, poisonBerry.transform.position) < 1.5f)
                 {
                     totalPoisonBerries++;
                     DoPoisonBerry();
@@ -447,7 +447,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(slowBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, slowBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, slowBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, slowBerry.transform.position) < 1.5f)
                 {
                     totalSlowBerries++;
                     DoSlowBerry(slowBerry);
@@ -480,7 +480,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(ultraBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, ultraBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, ultraBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, ultraBerry.transform.position) < 1.5f)
                 {
                     totalUltraBerries++;
                     DoUltraBerry(ultraBerry);
@@ -513,7 +513,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(speedyBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, speedyBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, speedyBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, speedyBerry.transform.position) < 1.5f)
                 {
                     totalSpeedyBerries++;
                     DoSpeedyBerry(speedyBerry);
@@ -546,7 +546,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(randomBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, randomBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, randomBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, randomBerry.transform.position) < 1.5f)
                 {
                     totalRandomBerries++;
                     System.Action[] funcs = {
@@ -592,7 +592,7 @@ public class GamePlayer : MonoBehaviour
                 {
                     Destroy(antiBerry);
                 }
-                else if (UnityEngine.Vector3.Distance(bird.transform.position, antiBerry.transform.position) < 1.5f)
+                else if (UnityEngine.Vector3.Distance(bird.transform.position, antiBerry.transform.position) < 1.5f || UnityEngine.Vector3.Distance(bird2.transform.position, antiBerry.transform.position) < 1.5f)
                 {
                     totalAntiBerries++;
                     DoAntiBerry(antiBerry);
